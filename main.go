@@ -1,20 +1,44 @@
 package main
 
 import (
+	"fyne.io/fyne"
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/widget"
 )
 
-func main() {
-	a := app.New()
+var a fyne.App
 
-	w := a.NewWindow("Hello")
+func main() {
+	a = app.New()
+	w := a.NewWindow("Whissage")
+	w.CenterOnScreen()
+	w.Resize(fyne.NewSize(400, 400))
 	w.SetContent(widget.NewVBox(
-		widget.NewLabel("Hello Fyne!"),
-		widget.NewButton("Quit", func() {
-			a.Quit()
+		widget.NewLabel("Login:"),
+		widget.NewEntry(),
+		widget.NewButton("Let's go", func() {
+			w.Close()
+			chatWindow()
 		}),
 	))
 
 	w.ShowAndRun()
+}
+
+func chatWindow() {
+	w := a.NewWindow("Chat")
+	w.CenterOnScreen()
+	w.Resize(fyne.NewSize(400, 400))
+	w.SetContent(widget.NewVBox(
+		widget.NewLabel("New message"),
+		widget.NewEntry(),
+		widget.NewButton("Send", func() {
+			send()
+		}),
+	))
+	w.Show()
+}
+
+func send() {
+
 }
