@@ -75,7 +75,7 @@ func appendMessage(text []byte) {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		content.Append(widget.NewLabel("from: " + data.User + " - " + data.Message))
+		content.Append(widget.NewLabel("from: " + data.User + " message: " + data.Message))
 	}
 }
 
