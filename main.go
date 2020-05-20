@@ -57,6 +57,7 @@ func chatWindow() {
 			widget.NewButton("Send", func() {
 				if messageEntry.Text != "" {
 					send(messageEntry.Text)
+					messageEntry.Text = ""
 				}
 			})),
 		widget.NewButton("Quit & close connection", func() {
@@ -77,7 +78,7 @@ func appendMessage(text []byte) {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		content.Append(widget.NewLabel("from: " + data.User + " message: " + data.Message))
+		content.Prepend(widget.NewLabel("from: " + data.User + " message: " + data.Message))
 	}
 }
 
