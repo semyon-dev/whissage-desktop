@@ -47,25 +47,26 @@ var scroll *widget.Group
 func chatWindow() {
 	w := a.NewWindow("Chat with " + username)
 	w.CenterOnScreen()
-	w.Resize(fyne.NewSize(400, 400))
+	w.Resize(fyne.NewSize(600, 450))
 
 	messageEntry := widget.NewEntry()
 	box := widget.NewVBox(
 		widget.NewLabel("New message"),
 		messageEntry,
-		widget.NewButton("Quit & close connection", func() {
-			closeConn()
-			w.Close()
-			a.Quit()
-		}),
 		widget.NewButton("Send", func() {
 			if messageEntry.Text != "" {
 				send(messageEntry.Text)
 				messageEntry.Text = ""
+				messageEntry.Refresh()
 			}
+		}),
+		widget.NewButton("Quit & close connection", func() {
+			closeConn()
+			w.Close()
+			a.Quit()
 		}))
 
-	scroll = widget.NewGroupWithScroller("title")
+	scroll = widget.NewGroupWithScroller("Whissage")
 	w.SetContent(fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, box, nil, nil), scroll, box))
 	w.Show()
 	connect()
@@ -77,7 +78,19 @@ func appendMessage(text []byte) {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		scroll.Prepend(widget.NewLabel("from: " + data.User + " message: " + data.Message))
+		if username == data.User {
+			scroll.Prepend(widget.NewLabelWithStyle(data.Message, fyne.TextAlignTrailing, fyne.TextStyle{
+				Bold:      false,
+				Italic:    false,
+				Monospace: false,
+			}))
+		} else {
+			scroll.Prepend(widget.NewLabelWithStyle(data.User+": "+data.Message, fyne.TextAlignLeading, fyne.TextStyle{
+				Bold:      true,
+				Italic:    false,
+				Monospace: false,
+			}))
+		}
 	}
 }
 
