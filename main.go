@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
+	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
 	"github.com/gorilla/websocket"
 	"github.com/semyon-dev/whissage-desktop/config"
@@ -41,7 +42,7 @@ func main() {
 	w.ShowAndRun()
 }
 
-var content *widget.Box
+var scroll *widget.Group
 
 func chatWindow() {
 	w := a.NewWindow("Chat with " + username)
@@ -49,26 +50,24 @@ func chatWindow() {
 	w.Resize(fyne.NewSize(400, 400))
 
 	messageEntry := widget.NewEntry()
-
-	content = widget.NewVBox(widget.NewLabel(""),
-		widget.NewHBox(
-			widget.NewLabel("New message"),
-			messageEntry,
-			widget.NewButton("Send", func() {
-				if messageEntry.Text != "" {
-					send(messageEntry.Text)
-					messageEntry.Text = ""
-				}
-			})),
+	box := widget.NewVBox(
+		widget.NewLabel("New message"),
+		messageEntry,
 		widget.NewButton("Quit & close connection", func() {
 			closeConn()
 			w.Close()
 			a.Quit()
+		}),
+		widget.NewButton("Send", func() {
+			if messageEntry.Text != "" {
+				send(messageEntry.Text)
+				messageEntry.Text = ""
+			}
 		}))
 
-	w.SetContent(content)
+	scroll = widget.NewGroupWithScroller("title")
+	w.SetContent(fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, box, nil, nil), scroll, box))
 	w.Show()
-
 	connect()
 }
 
@@ -78,7 +77,7 @@ func appendMessage(text []byte) {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		content.Prepend(widget.NewLabel("from: " + data.User + " message: " + data.Message))
+		scroll.Prepend(widget.NewLabel("from: " + data.User + " message: " + data.Message))
 	}
 }
 
